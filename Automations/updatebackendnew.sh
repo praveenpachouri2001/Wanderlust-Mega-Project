@@ -1,10 +1,7 @@
 #!/bin/bash
 
-# Set the Instance ID and path to the .env file
-INSTANCE_ID="i-030da7d31a1dbbffc"
-
-# Retrieve the public IP address of the specified EC2 instance
-ipv4_address=$(aws ec2 describe-instances --instance-ids $INSTANCE_ID --query 'Reservations[0].Instances[0].PublicIpAddress' --output text)
+# Retrieve the Minikube IP address
+ipv4_address=$(minikube ip)
 
 # Path to the .env file
 file_to_find="../backend/.env.docker"
@@ -13,9 +10,9 @@ file_to_find="../backend/.env.docker"
 current_url=$(sed -n "4p" $file_to_find)
 
 # Update the .env file if the IP address has changed
-if [[ "$current_url" != "FRONTEND_URL=\"http://${ipv4_address}:5173\"" ]]; then
+if [[ "$current_url" != "FRONTEND_URL=\"http://${ipv4_address}:31000\"" ]]; then
     if [ -f $file_to_find ]; then
-        sed -i -e "s|FRONTEND_URL.*|FRONTEND_URL=\"http://${ipv4_address}:5173\"|g" $file_to_find
+        sed -i -e "s|FRONTEND_URL.*|FRONTEND_URL=\"http://${ipv4_address}:31000\"|g" $file_to_find
     else
         echo "ERROR: File not found."
     fi
